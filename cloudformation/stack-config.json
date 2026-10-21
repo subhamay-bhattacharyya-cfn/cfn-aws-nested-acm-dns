@@ -1,5 +1,5 @@
 {
-  "stackName": "github-repo-template-stack",
+  "stackName": "cfn-aws-nested-acm-dns-stack",
   "templateFile": "cloudformation/template.yaml",
   "parameterFile": "cloudformation/parameters.json"
 }

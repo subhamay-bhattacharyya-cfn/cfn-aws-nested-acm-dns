@@ -13,7 +13,46 @@
 [![Files](https://img.shields.io/github/directory-file-count/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)&nbsp;[![Repo Size](https://img.shields.io/github/repo-size/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)&nbsp;[![Release Date](https://img.shields.io/github/release-date/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/releases)
 
 <!-- Row 5: Custom Metrics -->
-[![Custom Endpoint](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bsubhamay/52393fb36dc28479957fbb381dda208a/raw/cfn-aws-nested-acm-dns.json)](https://gist.github.com/subhamay-bhattacharyya-cfn/52393fb36dc28479957fbb381dda208a)
+[![Custom Endpoint](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bsubhamay/76a395931a9900b063233df987207cb5/raw/cfn-aws-nested-acm-dns.json)](https://gist.github.com/subhamay-bhattacharyya-cfn/76a395931a9900b063233df987207cb5)
+
+## ACM Certificate with DNS
+
+`cloudformation/template.yaml` creates an AWS Certificate Manager (ACM) public certificate validated through DNS in an existing Route 53 hosted zone. It also creates a Route 53 record that points a domain name at a target such as an Application Load Balancer, CloudFront distribution, or any hostname.
+
+**Resources created:**
+
+- `AWS::CertificateManager::Certificate`: public certificate for `DomainName`, with DNS validation and Certificate Transparency logging enabled
+- `AWS::Route53::RecordSet`: a `CNAME` or `A` record for `DomainName`
+
+**Key parameters:**
+
+| Parameter | Description |
+| --------- | ----------- |
+| `HostedZoneId` | ID of the existing Route 53 public hosted zone |
+| `DomainName` | Fully qualified domain name, e.g. `app.example.com`. A leading `*.` is allowed for wildcard certificates. |
+| `SubjectAlternativeNames` | Optional comma-separated extra names for the certificate |
+| `RecordType` | `CNAME` (default) or `A` |
+| `DnsTargetValue` | Hostname for `CNAME`, or IPv4 address for `A` |
+| `DnsTTL` | TTL in seconds for the record (default `300`, applies to `CNAME` only) |
+
+**Outputs:** `CertificateArn` (exported as `<stack-name>-CertificateArn`), `DomainName`, and `DnsRecordName`.
+
+**Example deployment:**
+
+```bash
+aws cloudformation deploy \
+  --template-file cloudformation/template.yaml \
+  --stack-name acm-app-dev \
+  --parameter-overrides \
+    HostedZoneId=Z0123456789ABCDEF \
+    DomainName=app.example.com \
+    DnsTargetValue=my-alb-123.us-east-1.elb.amazonaws.com \
+  --region us-east-1
+```
+
+> **Note:** DNS validation records are created only for `DomainName`. Names listed in `SubjectAlternativeNames` will not be validated automatically and the stack will wait on them until they are validated.
+>
+> CloudFront requires certificates in `us-east-1`.
 
 ---
 

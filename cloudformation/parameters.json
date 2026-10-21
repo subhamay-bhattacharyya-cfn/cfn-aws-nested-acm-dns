@@ -1,7 +1,8 @@
 {
   "Environment": "devl",
-  "KmsKey": "SB-KMS",
   "ProjectName": "cfn-nstd",
-  "BucketBaseName": "s3-nested-stack",
+  "HostedZoneId": "Z04971833SSSXE4CFQ3M",
+  "DnsTargetValue": "aws-projects.site",
+  "DomainName": "spacemission.aws-projects.site",
   "CiSuffix": ""
 }

@@ -1,0 +1,137 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: 'Root CloudFormation template that invokes a nested S3 bucket stack'
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Nested Stack Configuration"
+        Parameters:
+          - NestedStacksS3BucketName
+      - Label:
+          default: "Common Bucket Configuration"
+        Parameters:
+          - ProjectName
+          - Environment
+      - Label:
+          default: "Bucket Configuration"
+        Parameters:
+          - BucketBaseName
+      - Label:
+          default: "Encryption Configuration"
+        Parameters:
+          - KmsKey
+          - EnableBucketKey
+      - Label:
+          default: "Advanced Configuration"
+        Parameters:
+          - CiSuffix
+    ParameterLabels:
+      NestedStacksS3BucketName:
+        default: "S3 Bucket Name"
+      ProjectName:
+        default: "Project Name"
+      BucketBaseName:
+        default: "Bucket Base Name"
+      Environment:
+        default: "Environment"
+      CiSuffix:
+        default: "CI Suffix"
+      KmsKey:
+        default: "KMS Key (ARN / Alias)"
+      EnableBucketKey:
+        default: "Enable S3 Bucket Key"
+
+Parameters:
+  NestedStacksS3BucketName:
+    Type: String
+    Default: "subhamay-cfn-templates-bucket-270453428528-us-east-1"
+    Description: "S3 bucket name where the nested CloudFormation template is stored"
+    MinLength: 3
+    MaxLength: 63
+    AllowedPattern: "^[a-z0-9][a-z0-9.-]*[a-z0-9]$"
+    ConstraintDescription: "S3 bucket name must be 3-63 characters, start and end with lowercase letter or number, and can contain hyphens and dots"
+
+  ProjectName:
+    Type: String
+    Default: "ztc-etl"
+    Description: "Project name to use as a bucket prefix"
+    MinLength: 1
+    MaxLength: 20
+    AllowedPattern: "^[a-z0-9-]+$"
+    ConstraintDescription: "Project name must be lowercase letters, numbers, and hyphens only"
+
+  BucketBaseName:
+    Type: String
+    Default: "csv-raw-data"
+    MinLength: 1
+    MaxLength: 20
+    AllowedPattern: "^[a-z0-9.-]+$"
+    ConstraintDescription: "Bucket base name must be 1-20 characters and can only contain lowercase letters, numbers, hyphens, and dots"
+    Description: Base name for the S3 bucket (account ID, environment, and region will be appended)
+
+  KmsKey:
+    Type: String
+    Default: ""
+    AllowedPattern: "^(alias/[a-zA-Z0-9_-]+|arn:aws:kms:[a-z0-9-]+:[0-9]+:key/[a-zA-Z0-9-]+|[a-zA-Z0-9_-]+)?$"
+    ConstraintDescription: "KMS Key can be a key name (e.g., my-key, auto-converted to alias/my-key), a KMS key alias (e.g., alias/my-key), or a full KMS key ARN (e.g., arn:aws:kms:region:account:key/key-id), or leave empty for no KMS encryption"
+    Description: "Optional KMS Key for S3 bucket encryption. Accepts: key name (my-key), alias (alias/my-key), or ARN (arn:aws:kms:region:account:key/key-id). Plain key names are auto-converted to aliases."
+
+  EnableBucketKey:
+    Type: String
+    Default: "false"
+    AllowedValues:
+      - "true"
+      - "false"
+    Description: "Enable S3 Bucket Key for KMS encryption cost optimization (only applicable when KmsKey is provided)"
+
+  Environment:
+    Type: String
+    Default: devl
+    Description: "Deployment environment for the S3 bucket"
+
+  CiSuffix:
+    Type: String
+    Default: ""
+    Description: "Optional CI suffix to append to the bucket name"
+
+Resources:
+  S3BucketNestedStack:
+    Type: AWS::CloudFormation::Stack
+    DeletionPolicy: Delete
+    UpdateReplacePolicy: Delete
+    Metadata:
+      com.aws.cloudformation.Context:
+        why: "Invokes the nested S3 bucket CloudFormation template to create a versioned, encrypted S3 bucket with public access blocking and optional logging/website configuration"
+        must:
+          - "Nested template must be accessible at the specified S3 location"
+          - "IAM principal must have s3:GetObject permission on the template S3 bucket"
+          - "CloudFormation service must have permission to assume the required IAM role for S3 and KMS operations"
+    Properties:
+      TemplateURL: !Sub https://${NestedStacksS3BucketName}.s3.us-east-1.amazonaws.com/cfn-nested-aws-s3-bucket/template.yaml
+      Parameters:
+        ProjectName: !Ref ProjectName
+        BucketBaseName: !Ref BucketBaseName
+        KmsKey: !Ref KmsKey
+        EnableBucketKey: !Ref EnableBucketKey
+        Environment: !Ref Environment
+        CiSuffix: !Ref CiSuffix
+      Tags:
+        - Key: ManagedBy
+          Value: RootStack
+        - Key: NestedStackPurpose
+          Value: S3BucketCreation
+
+Outputs:
+  NestedStackId:
+    Description: "ID of the nested stack"
+    Value: !Ref S3BucketNestedStack
+
+  S3BucketName:
+    Description: "Name of the S3 bucket created by the nested stack"
+    Value: !GetAtt S3BucketNestedStack.Outputs.S3BucketName
+
+  S3BucketArn:
+    Description: "ARN of the S3 bucket created by the nested stack"
+    Value: !GetAtt S3BucketNestedStack.Outputs.S3BucketArn

@@ -1,19 +1,19 @@
-# CloudFormation S3 Template Repository
+# CloudFormation Nested Stack Template : AWS ACM with DNS
 
 <!-- Row 1: Status - Most Important -->
-[![Release](https://img.shields.io/github/v/release/subhamay-bhattacharyya/aws-bedrock-faq-chatbot?label=Release)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot/releases)&nbsp;[![Release Workflow](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot/actions/workflows/release.yaml/badge.svg)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot/actions/workflows/release.yaml)&nbsp;[![Issues](https://img.shields.io/github/issues/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot/issues)&nbsp;[![Last Commit](https://img.shields.io/github/last-commit/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot/commits)
+[![Release](https://img.shields.io/github/v/release/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns?label=Release)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/releases)&nbsp;[![Release Workflow](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/actions/workflows/ci.yaml/badge.svg)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/actions/workflows/ci.yaml)&nbsp;[![Issues](https://img.shields.io/github/issues/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/issues)&nbsp;[![Last Commit](https://img.shields.io/github/last-commit/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/commits)
 
 <!-- Row 2: Code Quality -->
-[![Top Language](https://img.shields.io/badge/Languages-Python%20%7C%20YAML-blue)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)&nbsp;[![Commits](https://img.shields.io/github/commit-activity/t/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot/commits)
+[![Top Language](https://img.shields.io/badge/Languages-YAML-blue)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)&nbsp;[![Commits](https://img.shields.io/github/commit-activity/t/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/commits)
 
 <!-- Row 3: Tech Stack -->
 [![CloudFormation](https://img.shields.io/badge/CloudFormation-IaC-orange?logo=amazonaws&logoColor=white)](https://aws.amazon.com/cloudformation/)&nbsp;[![Built with Claude Code](https://img.shields.io/badge/Built_with-Claude_Code-D97757?logo=anthropic&logoColor=white)](https://claude.ai/)
 
 <!-- Row 4: Repository Info -->
-[![Files](https://img.shields.io/github/directory-file-count/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)&nbsp;[![Repo Size](https://img.shields.io/github/repo-size/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)&nbsp;[![Release Date](https://img.shields.io/github/release-date/subhamay-bhattacharyya/aws-bedrock-faq-chatbot)](https://github.com/subhamay-bhattacharyya/aws-bedrock-faq-chatbot/releases)
+[![Files](https://img.shields.io/github/directory-file-count/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)&nbsp;[![Repo Size](https://img.shields.io/github/repo-size/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)&nbsp;[![Release Date](https://img.shields.io/github/release-date/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns)](https://github.com/subhamay-bhattacharyya-cfn/cfn-aws-nested-acm-dns/releases)
 
 <!-- Row 5: Custom Metrics -->
-[![Custom Endpoint](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bsubhamay/52393fb36dc28479957fbb381dda208a/raw/aws-bedrock-faq-chatbot.json)](https://gist.github.com/subhamay-bhattacharyya/52393fb36dc28479957fbb381dda208a)
+[![Custom Endpoint](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/bsubhamay/52393fb36dc28479957fbb381dda208a/raw/cfn-aws-nested-acm-dns.json)](https://gist.github.com/subhamay-bhattacharyya-cfn/52393fb36dc28479957fbb381dda208a)
 
 ---
 

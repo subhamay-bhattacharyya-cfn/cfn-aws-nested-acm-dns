@@ -73,13 +73,14 @@ Select `feat`, `fix`, or `chore` type. Only `feat` and `fix` trigger releases.
 
 `cloudformation/template.yaml` creates:
 
-- **`Certificate`** (`AWS::CertificateManager::Certificate`): public certificate for `DomainName`, validated via DNS in `HostedZoneId`
+- **`Certificate`** (`AWS::CertificateManager::Certificate`): public certificate for `DomainName`, validated via DNS in `HostedZoneId`. Its `Name` tag is `{ProjectName}-{DomainName}-{Environment}`, with `-{CiSuffix}` appended when `CiSuffix` is set
 - **`DnsRecord`** (`AWS::Route53::RecordSet`): `CNAME` or `A` record for `DomainName` pointing at `DnsTargetValue`
 
 ### Conditions
 
 - `HasSubjectAlternativeNames`: true when `SubjectAlternativeNames` is non-empty
 - `IsCnameRecord`: true when `RecordType` is `CNAME` (TTL is applied only for CNAME)
+- `HasCiSuffix`: true when `CiSuffix` is non-empty (appended to the certificate `Name` tag)
 
 ### Outputs
 
@@ -93,6 +94,9 @@ Select `feat`, `fix`, or `chore` type. Only `feat` and `fix` trigger releases.
 
 **Key inputs:**
 
+- `ProjectName` (required): project prefix for the certificate `Name` tag
+- `Environment` (required): environment label for the `Name` tag (e.g. `devl`, `stag`, `prod`)
+- `CiSuffix` (default `""`): optional suffix for CI/CD unique deployments, used in the `Name` tag
 - `HostedZoneId`: existing public Route 53 hosted zone ID
 - `DomainName` (required): FQDN, a leading `*.` is allowed for wildcard certificates
 - `SubjectAlternativeNames` (optional): comma-separated extra names
@@ -100,6 +104,8 @@ Select `feat`, `fix`, or `chore` type. Only `feat` and `fix` trigger releases.
 - `DnsTargetValue` (required): hostname for CNAME, IPv4 address for A
 - `DnsTTL` (default `300`): TTL in seconds, CNAME only
 - `ValidationMethod` (default `DNS`): only `DNS` is supported
+
+**Parameter groups:** The `Metadata` section (`AWS::CloudFormation::Interface`) groups parameters in the console into Project, Certificate, and DNS record.
 
 **Known limitation:** `DomainValidationOptions` lists only `DomainName`. Validation records are not created for SAN entries, so a stack with SANs will wait on those names until they are validated. Fixing this requires one `DomainValidationOptions` entry per SAN or a custom resource, since CloudFormation has no loop without a transform.
 
@@ -158,6 +164,8 @@ aws cloudformation deploy \
   --template-file cloudformation/template.yaml \
   --stack-name acm-app-dev \
   --parameter-overrides \
+    ProjectName=cfn-nstd \
+    Environment=devl \
     HostedZoneId=Z0123456789ABCDEF \
     DomainName=app.example.com \
     DnsTargetValue=my-alb-123.us-east-1.elb.amazonaws.com \
@@ -196,7 +204,7 @@ Only commits to `main` trigger releases. Feature branches use this format but re
 ## When Modifying the Template
 
 1. **Edit `cloudformation/template.yaml`**
-2. **Update `cloudformation/parameters.json`** if parameters are added or changed
+2. **Update `cloudformation/parameters.json`** if parameters are added or changed, and keep the `Metadata` parameter groups in sync
 3. **Test locally** with `aws cloudformation validate-template`
 4. **Create a PR** with a conventional commit message (e.g., `feat: add CloudFront-friendly record type`)
 5. **CI validates and deploys** through the reusable workflow

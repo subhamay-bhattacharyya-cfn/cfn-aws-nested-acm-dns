@@ -4,7 +4,34 @@ Description: >
   DNS record pointing a domain name at a target (ALB, CloudFront, or any
   hostname). Assumes the hosted zone already exists in Route 53.
 
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Project
+        Parameters:
+          - ProjectName
+          - Environment
+          - CiSuffix
+      - Label:
+          default: Certificate
+        Parameters:
+          - DomainName
+          - SubjectAlternativeNames
+          - ValidationMethod
+      - Label:
+          default: DNS record
+        Parameters:
+          - HostedZoneId
+          - RecordType
+          - DnsTargetValue
+          - DnsTTL
+
 Parameters:
+  ProjectName:
+    Type: String
+    Description: Project prefix used in the certificate Name tag (e.g. cfn-nstd)
+
   HostedZoneId:
     Type: String
     Default: "Z04971833SSSXE4CFQ3M"
@@ -48,9 +75,19 @@ Parameters:
       - DNS
     Description: Certificate validation method. Only DNS is supported by this template.
 
+  Environment:
+    Type: String
+    Description: Environment label used in the certificate Name tag (e.g. devl, stag, prod)
+
+  CiSuffix:
+    Type: String
+    Default: ""
+    Description: Optional suffix for CI/CD unique deployments. Leave empty for none.
+
 Conditions:
   HasSubjectAlternativeNames: !Not [!Equals [!Join ["", !Ref SubjectAlternativeNames], ""]]
   IsCnameRecord: !Equals [!Ref RecordType, CNAME]
+  HasCiSuffix: !Not [!Equals [!Ref CiSuffix, ""]]
 
 Resources:
   Certificate:
@@ -68,7 +105,10 @@ Resources:
       CertificateTransparencyLoggingPreference: ENABLED
       Tags:
         - Key: Name
-          Value: !Ref DomainName
+          Value: !If
+            - HasCiSuffix
+            - !Sub "${ProjectName}-${DomainName}-${Environment}-${CiSuffix}"
+            - !Sub "${ProjectName}-${DomainName}-${Environment}"
 
   DnsRecord:
     Type: AWS::Route53::RecordSet

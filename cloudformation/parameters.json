@@ -1,6 +1,6 @@
 {
   "Environment": "devl",
-  "ProjectName": "cfn-nstd",
+  "ProjectName": "cfn-nested",
   "HostedZoneId": "Z04971833SSSXE4CFQ3M",
   "DnsTargetValue": "aws-projects.site",
   "DomainName": "spacemission.aws-projects.site",

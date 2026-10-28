@@ -30,6 +30,7 @@ Metadata:
 Parameters:
   ProjectName:
     Type: String
+    Default: "cfn-nested"
     Description: Project prefix used in the certificate Name tag (e.g. cfn-nstd)
 
   HostedZoneId:
